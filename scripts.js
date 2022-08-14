@@ -8,6 +8,11 @@ const button_get_data = document.getElementById('button_get_data')
 const select_form = document.getElementById('select_form')
 const button_waifu_img = document.getElementById('button_waifu_img')
 const anime_img = document.getElementById('anime_img')
+const quotes_list = document.getElementById('quotes_list')
+const formulario = document.getElementById('formulario')
+const anime_img_2 = document.getElementById('anime_img_2')
+
+
 
 const op = document.getElementById('op')
 
@@ -49,70 +54,55 @@ button_waifu_img.addEventListener('click',()=>{
         })
         .catch(err => console.error(err));
 
-
 })
 
-/* button_get_data.addEventListener('submit',(e)=>{
-    e.preventDefault()
-    getData(select_form.value)
-})
+let dataString = undefined
 
-const getData = (id)=>{
-    if(id==undefined){
-        fetch('https://animechan.vercel.app/api/quotes/anime?title=bleach')
-        .then(response => response.json())
-        .then(res => {
-            console.log(res)
+document.querySelector('form')
+    .addEventListener('submit', e =>{
+        e.preventDefault()
+        const data1 = Object.fromEntries(
+            new FormData(e.target)    
+        )
+        console.log(data1.search)
+        
+        dataString = data1.search
+        console.log(dataString)
 
-            const fragment = document.createDocumentFragment()
-
-
-            for (const char of res){
-                const option = document.createElement('option')
-                option.setAttribute('value', char.character)
-                option.textContent = char.character
-                fragment.appendChild(option)
-            }
-            select_form.appendChild(fragment)
-        })
-    }else{
-        fetch('https://animechan.vercel.app/api/quotes/anime?title=bleach')
-        .then(response => response.json())
-        .then(res =>{
-        console.log(res)
-        const quotes_list = document.getElementById('quotes_list')
-        const fragment = document.createDocumentFragment()
-        for(const iterable of res){
-            const listItem = document.createElement('li')
-            listItem.textContent = `${iterable.character} : ${iterable.quote}`
-            listItem.classList.add('margin_quotes')
-            fragment.appendChild(listItem)
-        }0
-            quotes_list.appendChild(fragment)
+        const options = {
+            method: 'GET',
+            headers: {
+                    'X-RapidAPI-Key': '964fcd4a1amsh80a1cf15eac88b8p1727b3jsn905709607eb7',
+                    'X-RapidAPI-Host': 'anime-db.p.rapidapi.com'
+                }
+            };
             
-        })
+        fetch(`https://anime-db.p.rapidapi.com/anime?page=1&size=1&search=${dataString}`, options)
+            .then(response => response.json())
+            .then(response =>{
+                console.log(response)
+                const fragment = document.createDocumentFragment()
+                    const listItem = document.createElement('li')
+                    listItem.textContent = `${response.data[0].title} Sinoposis : ${response.data[0].synopsis}`
+                    fragment.appendChild(listItem)
+                    quotes_list.appendChild(fragment)
+                    anime_img_2.src = response.data[0].image
 
-    }
-} */
+                    if(quotes_list.children[1]){
+                        quotes_list.removeChild(quotes_list.children[0])
+                        quotes_list.appendChild(fragment)
+                    }
+                    
+            })
+            .catch(err => console.error(err));
+    })
 
-/* getData() */
 
-/* button.addEventListener('click', ()=>{
-    fetch('https://animechan.vercel.app/api/quotes/anime?title=bleach')
-      .then(response => response.json())
-      .then(res => {
-        console.log(res)
-        const quotes_list = document.getElementById('quotes_list')
-        const fragment = document.createDocumentFragment()
-        for(const iterable of res){
-            const listItem = document.createElement('li')
-            listItem.textContent = `${iterable.character} : ${iterable.quote}`
-            listItem.classList.add('margin_quotes')
-            fragment.appendChild(listItem)
-        }
-            quotes_list.appendChild(fragment)
-      })
-}) */
+
+
+
+
+
 
 
 
